@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手写Promise</title>
+</head>
+
+<body>
+    <!-- <script>
+        function Promise1(executor) {
+            var that = this;
+            that.status = 'pending';
+            that.val = null;
+            that.reason = null;
+            that.resolvedCallbacks = [];
+            that.rejectedCallbacks = [];
+
+            function resolve(val) {
+                if (that.status === 'pending') {
+                    that.status = 'resolved';
+                    that.val = val;
+                    that.resolvedCallbacks.map(cb => cb(that.val));
+                }
+            }
+
+            function reject(val) {
+                if (that.state ==='pending') {
+                    that.state = 'rejected'
+                    that.reason = val;
+                    that.rejectedCallbacks.map(cb => cb(that.reason))
+                }
+            }
+
+            try {
+                executor(resolve, reject);
+            } catch (error) {
+                reject(error);
+            }
+        }
+
+        Promise1.prototype.then = function(onFulfilled,onRejected){
+            var that = this;
+            if(this.status === 'pending'){
+                that.resolvedCallbacks.push(onFulfilled);
+                that.rejectedCallbacks.push(onRejected);
+            }
+            if(this.status === 'resolved'){
+                onFulfilled(that.val);
+            }
+
+            if (that.state === 'rejected') {
+                onRejected(that.value)
+            }
+
+        }
+
+        let p = new Promise1(function (resolve, reject) {
+            setTimeout(() => {
+                resolve(1);
+            }, 3000);
+        });
+       
+        // setInterval(()=>{
+        //     console.log(p);
+        // },1000)
+        p.then((result) => {
+            console.log(result);
+        })
+    </script> -->
+
+    <script>
+        const PENDING = 'PENDING';
+        const REJECTED = 'REJECTED';
+        const FULFILLED = 'FULFILLED';
+        function Promise1(executor) {
+            var that = this;
+            that.status = PENDING;
+            that.value = null;
+            that.rejectValue = null;
+            that.onResolvedCallbacks = [];
+            this.onRejectedCallbacks = [];
+            function resolve(val) {
+                if (that.status === PENDING) {
+                    that.status = FULFILLED;
+                    that.value = val;
+                    that.onResolvedCallbacks.map(cb=>cb(that.value));
+                }
+            }
+            function reject(val) {
+                if (this.status === PENDING) {
+                    this.status = REJECTED;
+                    this.rejectValue = val;
+                    that.onRejectedCallbacks.map(cb=>cb(that.rejectValue));
+                }
+            }
+            try {
+                executor(resolve, reject);
+            } catch (error) {
+                reject(error);
+            }
+        }
+
+
+        Promise1.prototype.then = function (resolve, reject) {
+            var that = this;
+            if(that.status === PENDING){
+                that.onResolvedCallbacks.push(resolve);
+                that.onRejectedCallbacks.push(reject);
+            }
+
+            if (that.status === FULFILLED) {
+                resolve(that.value);
+            }
+            if (that.status === REJECTED) {
+                reject(that.rejectValue);
+            }
+        }
+
+
+        // new Promise1((resolve)=>{
+        //     resolve(1);
+        // }).then((res)=>{
+        //     console.log(res);
+        // })
+        const promise = new Promise((resolve, reject) => {
+  console.log(1)
+  resolve()
+  console.log(2)
+})
+promise.then(() => {
+  console.log(3)
+})
+console.log(4)
+    </script>
+</body>
+
+</html>
